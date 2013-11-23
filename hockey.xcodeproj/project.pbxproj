@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5267E794183944AC00B12529 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 5267E793183944AC00B12529 /* main.c */; };
-		5267E796183944AC00B12529 /* hockey.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 5267E795183944AC00B12529 /* hockey.1 */; };
+		52F03DB61839458000F9BF5F /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 52F03DB31839458000F9BF5F /* main.c */; settings = {COMPILER_FLAGS = "-w"; }; };
+		52F03DB81839458D00F9BF5F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F03DB71839458D00F9BF5F /* OpenGL.framework */; };
+		52F03DBA1839459100F9BF5F /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52F03DB91839459100F9BF5F /* GLUT.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,16 +19,19 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				5267E796183944AC00B12529 /* hockey.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5255BDF0183A5D0000374BA5 /* boards.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = boards.ppm; sourceTree = SOURCE_ROOT; };
 		5267E790183944AC00B12529 /* hockey */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hockey; sourceTree = BUILT_PRODUCTS_DIR; };
-		5267E793183944AC00B12529 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		5267E795183944AC00B12529 /* hockey.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = hockey.1; sourceTree = "<group>"; };
+		52F03DB31839458000F9BF5F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = SOURCE_ROOT; };
+		52F03DB71839458D00F9BF5F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		52F03DB91839459100F9BF5F /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		52F03DBB183948B500F9BF5F /* ice.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ice.ppm; sourceTree = SOURCE_ROOT; };
+		52F03DBC183948B500F9BF5F /* puck.ppm */ = {isa = PBXFileReference; lastKnownFileType = file; path = puck.ppm; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +39,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52F03DBA1839459100F9BF5F /* GLUT.framework in Frameworks */,
+				52F03DB81839458D00F9BF5F /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +50,8 @@
 		5267E787183944AC00B12529 = {
 			isa = PBXGroup;
 			children = (
+				52F03DB91839459100F9BF5F /* GLUT.framework */,
+				52F03DB71839458D00F9BF5F /* OpenGL.framework */,
 				5267E792183944AC00B12529 /* hockey */,
 				5267E791183944AC00B12529 /* Products */,
 			);
@@ -60,8 +68,10 @@
 		5267E792183944AC00B12529 /* hockey */ = {
 			isa = PBXGroup;
 			children = (
-				5267E793183944AC00B12529 /* main.c */,
-				5267E795183944AC00B12529 /* hockey.1 */,
+				5255BDF0183A5D0000374BA5 /* boards.ppm */,
+				52F03DBB183948B500F9BF5F /* ice.ppm */,
+				52F03DBC183948B500F9BF5F /* puck.ppm */,
+				52F03DB31839458000F9BF5F /* main.c */,
 			);
 			path = hockey;
 			sourceTree = "<group>";
@@ -117,7 +127,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5267E794183944AC00B12529 /* main.c in Sources */,
+				52F03DB61839458000F9BF5F /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -225,6 +235,7 @@
 				5267E79B183944AC00B12529 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
