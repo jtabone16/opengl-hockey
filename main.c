@@ -31,15 +31,15 @@
 #define BOARDS "boards.ppm"
 
 GLUquadricObj *quad;
-GLfloat viewer[3] = {250.0, 50.0, 10.0};
-GLfloat reference[3] = {250.0, 50.0, 1000.0};
-GLfloat puck[3] = {250.0, 20.0, 150.0};
+GLfloat viewer[3] = {250.0, 50.0, 1000.0};
+GLfloat reference[3] = {250.0, 50.0, 1.0};
+GLfloat puck[3] = {250.0, 20.0, 900.0};
 GLuint imageID[6];
 int width, height;
 GLubyte *imageData;
 typedef GLfloat point3[3];
-
-point3 meter[2] = {{150.0, 125.0, 200.0}, {150.0, 150.0, 200.0}};
+point3 meter[2] = {{230.0, 150.0, 800.0}, {230.0, 190.0, 800.0}};
+point3 puckPositionAtTime[20]; //get 20 positions
 
 
 void myinit(void)
@@ -91,22 +91,23 @@ void drawShotMeter(void){
     point3 colors[10]= {{223, 1, 1}, {255, 0, 0}, {254, 46, 46}, {250, 88, 88}, {130, 250, 88},
         {100, 254, 46}, {64, 255, 0}, {58, 223, 0}, {49, 180, 4}, {41, 138, 8}};
     
+    
     glPushMatrix();
     
     for (i = 0 ; i<10; i++){
         glBegin(GL_POLYGON);
             glColor3ub(colors[i][0], colors[i][1], colors[i][2]);
-            glVertex3f(150.0+incr, 125.0, 200.0);
-            glVertex3f(155.0+incr, 125.0, 200.0);
-            glVertex3f(155.0+incr, 150.0, 200.0);
-            glVertex3f(150.0+incr, 150.0, 200.0);
+            glVertex3f(230.0+incr, 150.0, 800.0);
+            glVertex3f(235.0+incr, 150.0, 800.0);
+            glVertex3f(235.0+incr, 170.0, 800.0);
+            glVertex3f(230.0+incr, 170.0, 800.0);
         glEnd();
         incr +=5;
     }
     
     //Black bar that will move back and forth
     glBegin(GL_LINES);
-        glColor3f(0.0, 0.0, 0.0);
+        glColor3f(1.0, 1.0, 1.0);
         glVertex3fv(meter[0]);
         glVertex3fv(meter[1]);
     glEnd();
@@ -118,8 +119,8 @@ void drawShotMeter(void){
 
 
 void drawRink(void){
-    point3 vertices[8] = { {0.0, 0.0, 1.0}, {500.0, 0.0, 1.0}, {500.0, 500.0, 1.0}, {0.0, 500.0, 1.0},
-        {0.0, 0.0, 1000.0}, {500.0, 0.0, 1000.0}, {500.0, 500.0, 1000.0}, {0.0, 500.0, 1000.0}};
+    point3 vertices[8] = { {0.0, 0.0, 1000.0}, {0.0, 500.0, 1000.0}, {500.0, 500.0, 1000.0}, {500.0, 0.0, 1000.0},
+        {500.0, 0.0, 1.0}, {500.0, 500.0, 1.0}, {0.0, 500.0, 1.0}, {0.0, 0.0, 1.0}};
     
     glPushMatrix();
     
@@ -145,19 +146,19 @@ void drawRink(void){
     //Left face
     glBegin(GL_QUADS);
         glColor3f(1.0, 0.0, 0.0); //red
-        glVertex3fv(vertices[4]);
-        glVertex3fv(vertices[0]);
-        glVertex3fv(vertices[3]);
         glVertex3fv(vertices[7]);
+        glVertex3fv(vertices[6]);
+        glVertex3fv(vertices[1]);
+        glVertex3fv(vertices[0]);
     glEnd();
     
     //Right face
     glBegin(GL_QUADS);
         glColor3f(0.0, 1.0, 0.0); //green
-        glVertex3fv(vertices[1]);
-        glVertex3fv(vertices[5]);
-        glVertex3fv(vertices[6]);
+        glVertex3fv(vertices[3]);
         glVertex3fv(vertices[2]);
+        glVertex3fv(vertices[5]);
+        glVertex3fv(vertices[4]);
     glEnd();
     
     //Bottom face i.e. the ice surface
@@ -165,27 +166,59 @@ void drawRink(void){
     glBindTexture(GL_TEXTURE_2D, imageID[1]);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3fv(vertices[4]);
+        glVertex3fv(vertices[7]);
         glTexCoord2f(0.0, 1.0);
-        glVertex3fv(vertices[5]);
-        glTexCoord2f(1.0, 1.0);
-        glVertex3fv(vertices[1]);
-        glTexCoord2f(1.0, 0.0);
         glVertex3fv(vertices[0]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[3]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[4]);
     glEnd();
     
     //Top face
     glDisable(GL_TEXTURE_2D);
     glBegin(GL_QUADS);
         glColor3f(1.0, 0.0, 1.0); //purple
-        glVertex3fv(vertices[3]);
-        glVertex3fv(vertices[2]);
+        glVertex3fv(vertices[1]);
         glVertex3fv(vertices[6]);
-        glVertex3fv(vertices[7]);
+        glVertex3fv(vertices[5]);
+        glVertex3fv(vertices[2]);
     glEnd();
     
     glPopMatrix();
 
+    
+}
+
+void shootPuck (GLfloat puck[3], GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat length, GLfloat velocity){
+    int i; //counter
+    GLfloat g = -9.8; //gravity
+    GLfloat swivelRadians = (swivelDegrees) * (M_PI/180);
+    GLfloat tiltRadians = (tiltDegrees) * (M_PI/180);
+    GLfloat puckTipY = (length) * sin(tiltRadians);
+    GLfloat puckProjection = (length) * cos(tiltRadians);
+    GLfloat puckTipX = (puckProjection) * cos(swivelRadians);
+    GLfloat puckTipZ = (puckProjection) * sin(swivelRadians);
+    GLfloat puckCompX = puckTipX - 0.0;
+    GLfloat puckCompY = puckTipY - 0.0;
+    GLfloat puckCompZ = puckTipZ - 0.0;
+    GLfloat puckDirCosX = puckCompX/length;
+    GLfloat puckDirCosY = puckCompY/length;
+    GLfloat puckDirCosZ = puckCompZ/length;
+    
+    //Solve velocity components
+    GLfloat puckVelX = puckDirCosX * velocity;
+    GLfloat puckVelY = puckDirCosY * velocity;
+    GLfloat puckVelZ = puckDirCosZ * velocity;
+    
+    //Solve position at time t
+    
+    for (i = 0; i < 20; i++){
+        GLfloat time = (i-1)*0.40;
+        puckPositionAtTime[i][0] = puckTipX + (puckVelX * time);
+        puckPositionAtTime[i][1] = puckTipY + (puckVelY * time) + ((1/2)*(g)*powf(time, 2.0));
+        puckPositionAtTime[i][2] = puckTipZ + (puckVelZ * time);
+    }
     
 }
 
@@ -194,7 +227,6 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
     gluLookAt(viewer[0], viewer[1], viewer[2], reference[0], reference[1], reference[2], 0.0, 1.0, 0.0);
-    
     
     drawRink();
     drawPuck();
@@ -207,12 +239,16 @@ void display(void)
 
 void idle(void) {
 	//Put code for power meter here
-	
+
+    
+    
 	glutPostRedisplay();
 }
 
 void keys(unsigned char key, int x, int y)
 {
+    int i;
+    
 	if(key == 'x') viewer[0] -= 1.0;
 	if(key == 'X') viewer[0] += 1.0;
 	if(key == 'y') viewer[1] -= 1.0;
@@ -221,8 +257,14 @@ void keys(unsigned char key, int x, int y)
 	if(key == 'Z') viewer[2] += 1.0;
     
     
-    if(key == 'p') puck[2] += 20.0;
-    if(key == 'P') puck[2] += 50.0;
+    if(key == 'p') {
+        shootPuck(puck, 30.0, 0.0, 2.0, 20.0);
+        for (i =0; i < 20; i++){
+            puck[0] = puckPositionAtTime[i][0];
+            puck[1] = puckPositionAtTime[i][1];
+            puck[2] = puckPositionAtTime[i][2];
+        }
+    }
     
 	display();
 }
@@ -316,7 +358,7 @@ int main(int argc, char** argv)
     generateTextures(2);
     myinit();
 	glutDisplayFunc(display);
-//    glutIdleFunc(idle);
+    glutIdleFunc(idle);
     glutKeyboardFunc(keys);
 	glutMainLoop();
 	
