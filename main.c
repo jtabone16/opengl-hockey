@@ -33,14 +33,15 @@
 GLUquadricObj *quad;
 GLfloat viewer[3] = {250.0, 50.0, 1000.0};
 GLfloat reference[3] = {250.0, 50.0, 1.0};
-GLfloat puck[3] = {250.0, 20.0, 900.0};
+GLfloat puck[3];
+GLfloat initPuck[3] = {250.0, 10.0, 900.0};
 GLuint imageID[6];
 int width, height;
 GLubyte *imageData;
 typedef GLfloat point3[3];
 point3 meter[2] = {{230.0, 150.0, 800.0}, {230.0, 190.0, 800.0}};
-point3 puckPositionAtTime[20]; //get 20 positions
-
+GLfloat time = 0.0;
+int puckShot = 0;
 
 void myinit(void)
 {
@@ -56,12 +57,46 @@ void myinit(void)
 
 }
 
+void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat length, GLfloat velocity, GLfloat time){
+    GLfloat g = 9.8; //gravity
+    GLfloat swivelRadians = (swivelDegrees) * (M_PI/180);
+    GLfloat tiltRadians = (tiltDegrees) * (M_PI/180);
+    GLfloat puckTipY = (length) * sin(tiltRadians);
+    GLfloat puckProjection = (length) * cos(tiltRadians);
+    GLfloat puckTipX = (puckProjection) * cos(swivelRadians);
+    GLfloat puckTipZ = (puckProjection) * sin(swivelRadians);
+    GLfloat puckCompX = puckTipX - 0.0;
+    GLfloat puckCompY = puckTipY - 0.0;
+    GLfloat puckCompZ = puckTipZ - 0.0;
+    GLfloat puckDirCosX = puckCompX/length;
+    GLfloat puckDirCosY = puckCompY/length;
+    GLfloat puckDirCosZ = puckCompZ/length;
+    
+    //Solve velocity components
+    GLfloat puckVelX = puckDirCosX * velocity;
+    GLfloat puckVelY = puckDirCosY * velocity;
+    GLfloat puckVelZ = puckDirCosZ * velocity;
+    
+    //Solve position at time
+    
+    puck[0] = puckTipX + (puckVelX * time);
+    puck[1] = puckTipY + (puckVelY * time) + ((1/2)*(g)*powf(time, 2.0));
+    puck[2] = puckTipZ + (puckVelZ * time);
+    
+}
+
+
 void drawPuck(void){
+    
+    shootPuck(20.0, 0.0, 10, 20.0, time); //make swivel and tilt degrees global
+    initPuck[0] = puck[0];
+    initPuck[1] = puck[1];
+    initPuck[2] = puck[2];
     
     glPushMatrix();
     
     glColor3ub(284, 284, 284); //uses RGB values from HTML codes
-    glTranslatef(puck[0], puck[1], puck[2]);
+    glTranslatef(initPuck[0], initPuck[1], initPuck[2]);
     glRotatef(90.0, 1.0, 0.0, 0.0);
     gluCylinder(quad,20.0,20.0,10.0,30,30);
     glRotatef(180.0, 1.0, 0.0, 0.0);
@@ -190,37 +225,6 @@ void drawRink(void){
     
 }
 
-void shootPuck (GLfloat puck[3], GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat length, GLfloat velocity){
-    int i; //counter
-    GLfloat g = -9.8; //gravity
-    GLfloat swivelRadians = (swivelDegrees) * (M_PI/180);
-    GLfloat tiltRadians = (tiltDegrees) * (M_PI/180);
-    GLfloat puckTipY = (length) * sin(tiltRadians);
-    GLfloat puckProjection = (length) * cos(tiltRadians);
-    GLfloat puckTipX = (puckProjection) * cos(swivelRadians);
-    GLfloat puckTipZ = (puckProjection) * sin(swivelRadians);
-    GLfloat puckCompX = puckTipX - 0.0;
-    GLfloat puckCompY = puckTipY - 0.0;
-    GLfloat puckCompZ = puckTipZ - 0.0;
-    GLfloat puckDirCosX = puckCompX/length;
-    GLfloat puckDirCosY = puckCompY/length;
-    GLfloat puckDirCosZ = puckCompZ/length;
-    
-    //Solve velocity components
-    GLfloat puckVelX = puckDirCosX * velocity;
-    GLfloat puckVelY = puckDirCosY * velocity;
-    GLfloat puckVelZ = puckDirCosZ * velocity;
-    
-    //Solve position at time t
-    
-    for (i = 0; i < 20; i++){
-        GLfloat time = (i-1)*0.40;
-        puckPositionAtTime[i][0] = puckTipX + (puckVelX * time);
-        puckPositionAtTime[i][1] = puckTipY + (puckVelY * time) + ((1/2)*(g)*powf(time, 2.0));
-        puckPositionAtTime[i][2] = puckTipZ + (puckVelZ * time);
-    }
-    
-}
 
 void display(void)
 {
@@ -239,10 +243,12 @@ void display(void)
 
 void idle(void) {
 	//Put code for power meter here
-
     
+    if (time < 1.0 && puckShot == 1){
+        time += 0.02;
+    }
     
-	glutPostRedisplay();
+	display();
 }
 
 void keys(unsigned char key, int x, int y)
@@ -258,12 +264,7 @@ void keys(unsigned char key, int x, int y)
     
     
     if(key == 'p') {
-        shootPuck(puck, 30.0, 0.0, 2.0, 20.0);
-        for (i =0; i < 20; i++){
-            puck[0] = puckPositionAtTime[i][0];
-            puck[1] = puckPositionAtTime[i][1];
-            puck[2] = puckPositionAtTime[i][2];
-        }
+        puckShot = 1;
     }
     
 	display();
