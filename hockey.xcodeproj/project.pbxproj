@@ -27,6 +27,7 @@
 /* Begin PBXFileReference section */
 		5255BDF0183A5D0000374BA5 /* boards.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = boards.ppm; sourceTree = SOURCE_ROOT; };
 		5267E790183944AC00B12529 /* hockey */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hockey; sourceTree = BUILT_PRODUCTS_DIR; };
+		527896CF18443243001AD957 /* net.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = net.ppm; path = ../../net.ppm; sourceTree = "<group>"; };
 		52F03DB31839458000F9BF5F /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = SOURCE_ROOT; };
 		52F03DB71839458D00F9BF5F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		52F03DB91839459100F9BF5F /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -68,6 +69,7 @@
 		5267E792183944AC00B12529 /* hockey */ = {
 			isa = PBXGroup;
 			children = (
+				527896CF18443243001AD957 /* net.ppm */,
 				5255BDF0183A5D0000374BA5 /* boards.ppm */,
 				52F03DBB183948B500F9BF5F /* ice.ppm */,
 				52F03DBC183948B500F9BF5F /* puck.ppm */,

@@ -28,19 +28,27 @@
 #define PI 3.14159
 #define ICE "ice.ppm"
 #define PUCK "puck.ppm"
+#define NET "net.ppm"
 #define BOARDS "boards.ppm"
 
 GLUquadricObj *quad;
 GLfloat viewer[3] = {250.0, 50.0, 1000.0};
 GLfloat reference[3] = {250.0, 50.0, 1.0};
-GLfloat puck[3];
-GLfloat initPuck[3] = {250.0, 10.0, 900.0};
+GLfloat puckAtTime[3]; //puck at time t
+GLfloat initPuck[3] = {250.0, 10.0, 900.0}; //initial puck coordinates
+GLfloat startPuck[3] = {250.0, 10.0, 900.0}; //starting position for puck
 GLuint imageID[6];
 int width, height;
 GLubyte *imageData;
 typedef GLfloat point3[3];
-point3 meter[2] = {{230.0, 150.0, 800.0}, {230.0, 190.0, 800.0}};
+point3 meter[2] = {{230.0, 150.0, 801.0}, {230.0, 170.0, 801.0}};
+GLfloat power = 0;
+int reachedRight = 0;
+int stopPowerBar = 0;
 GLfloat time = 0.0;
+GLfloat velocity;
+GLfloat swivel;
+GLfloat tilt;
 int puckShot = 0;
 
 void myinit(void)
@@ -57,41 +65,29 @@ void myinit(void)
 
 }
 
-void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat length, GLfloat velocity, GLfloat time){
-    GLfloat g = 9.8; //gravity
+void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat v, GLfloat t){
+    GLfloat g = -9.8; //gravity
     GLfloat swivelRadians = (swivelDegrees) * (M_PI/180);
     GLfloat tiltRadians = (tiltDegrees) * (M_PI/180);
-    GLfloat puckTipY = (length) * sin(tiltRadians);
-    GLfloat puckProjection = (length) * cos(tiltRadians);
-    GLfloat puckTipX = (puckProjection) * cos(swivelRadians);
-    GLfloat puckTipZ = (puckProjection) * sin(swivelRadians);
-    GLfloat puckCompX = puckTipX - 0.0;
-    GLfloat puckCompY = puckTipY - 0.0;
-    GLfloat puckCompZ = puckTipZ - 0.0;
-    GLfloat puckDirCosX = puckCompX/length;
-    GLfloat puckDirCosY = puckCompY/length;
-    GLfloat puckDirCosZ = puckCompZ/length;
+    GLfloat velCompY = v * sin(tiltRadians);
+    GLfloat velCompX = v * cos(tiltRadians) * sin(swivelRadians);
+    GLfloat velCompZ = (-v) * cos(tiltRadians) * cos(swivelRadians);
     
-    //Solve velocity components
-    GLfloat puckVelX = puckDirCosX * velocity;
-    GLfloat puckVelY = puckDirCosY * velocity;
-    GLfloat puckVelZ = puckDirCosZ * velocity;
+    //Solve position at time t
     
-    //Solve position at time
-    
-    puck[0] = puckTipX + (puckVelX * time);
-    puck[1] = puckTipY + (puckVelY * time) + ((1/2)*(g)*powf(time, 2.0));
-    puck[2] = puckTipZ + (puckVelZ * time);
+    puckAtTime[0] = startPuck[0] + (velCompX * t);
+    puckAtTime[1] = startPuck[1] + (velCompY * t) + ((1/2)*(g)*powf(t, 2));
+    puckAtTime[2] = startPuck[2] + (velCompZ * t);
     
 }
 
 
 void drawPuck(void){
     
-    shootPuck(20.0, 0.0, 10, 20.0, time); //make swivel and tilt degrees global
-    initPuck[0] = puck[0];
-    initPuck[1] = puck[1];
-    initPuck[2] = puck[2];
+    shootPuck(swivel, tilt, velocity, time);
+    initPuck[0] = puckAtTime[0];
+    initPuck[1] = puckAtTime[1];
+    initPuck[2] = puckAtTime[2];
     
     glPushMatrix();
     
@@ -110,6 +106,93 @@ void drawPuck(void){
 
 void drawGoal(void){
     
+    //Left Post
+    glPushMatrix();
+
+    glColor3ub(255, 0, 0); //uses RGB values from HTML codes
+    glTranslatef(150.0, 200.0, 200.0);
+    glRotatef(90.0, 1.0, 0.0, 0.0);
+    gluCylinder(quad,10.0,10.0,200.0,30,30);
+    glRotatef(180.0, 1.0, 0.0, 0.0);
+    gluDisk(quad, 0.0, 10.0, 30, 1);
+    glRotatef(180.0, 1.0, 0.0, 0.0);
+    gluDisk(quad, 0.0, 10.0, 30, 1);
+    
+    glPopMatrix();
+
+    //Right Post
+    glPushMatrix();
+    
+    glColor3ub(255, 0, 0); //uses RGB values from HTML codes
+    glTranslatef(350.0, 200.0, 200.0);
+    glRotatef(90.0, 1.0, 0.0, 0.0);
+    gluCylinder(quad,10.0,10.0,200.0,30,30);
+    glRotatef(180.0, 1.0, 0.0, 0.0);
+    gluDisk(quad, 0.0, 10.0, 30, 1);
+    glRotatef(180.0, 1.0, 0.0, 0.0);
+    gluDisk(quad, 0.0, 10.0, 30, 1);
+    
+    glPopMatrix();
+    
+    //Crossbar
+    glPushMatrix();
+    
+    glColor3ub(255, 0, 0); //uses RGB values from HTML codes
+    glTranslatef(142.0, 200.0, 200.0);
+    glRotatef(90.0, 0.0, 1.0, 0.0);
+    gluCylinder(quad,10.0,10.0,216.0,30,30);
+    glRotatef(180.0, 1.0, 0.0, 0.0);
+    gluDisk(quad, 0.0, 10.0, 30, 1);
+    glRotatef(180.0, 1.0, 0.0, 0.0);
+    gluDisk(quad, 0.0, 10.0, 30, 1);
+    
+    glPopMatrix();
+    
+    
+    //Sides of net
+    glPushMatrix();
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, imageID[2]);
+    glBegin(GL_POLYGON);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(150.0, 5.0, 200.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(150.0, 200.0, 200.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(150.0, 5.0, 110.0);
+    glEnd();
+    
+    glTranslatef(200.0, 0.0, 0.0);
+    glBegin(GL_POLYGON);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(150.0, 5.0, 200.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(150.0, 200.0, 200.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(150.0, 5.0, 110.0);
+    glEnd();
+    
+    glPopMatrix();
+    
+    //Back of net
+    
+    glPushMatrix();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(150.0, 5.0, 110.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(150.0, 200.0, 200.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(350.0, 200.0, 200.0);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(350.0, 5.0, 110.0);
+    glEnd();
+    
+    glDisable(GL_TEXTURE_2D);
+
+    glPopMatrix();
     
 }
 
@@ -122,6 +205,7 @@ void drawStick(void){
 
 void drawShotMeter(void){
     int i;
+    int p;
     int incr = 0;
     point3 colors[10]= {{223, 1, 1}, {255, 0, 0}, {254, 46, 46}, {250, 88, 88}, {130, 250, 88},
         {100, 254, 46}, {64, 255, 0}, {58, 223, 0}, {49, 180, 4}, {41, 138, 8}};
@@ -140,13 +224,13 @@ void drawShotMeter(void){
         incr +=5;
     }
     
-    //Black bar that will move back and forth
+    //White bar that will move back and forth
+    glTranslatef(power, 0.0, 0.0);
     glBegin(GL_LINES);
         glColor3f(1.0, 1.0, 1.0);
         glVertex3fv(meter[0]);
         glVertex3fv(meter[1]);
     glEnd();
-    
     
     glPopMatrix();
     
@@ -233,9 +317,9 @@ void display(void)
     gluLookAt(viewer[0], viewer[1], viewer[2], reference[0], reference[1], reference[2], 0.0, 1.0, 0.0);
     
     drawRink();
-    drawPuck();
+    drawGoal();
     drawShotMeter();
-    
+    drawPuck();
     
     glFlush();
 	glutSwapBuffers(); /*Display next buffer*/
@@ -244,8 +328,28 @@ void display(void)
 void idle(void) {
 	//Put code for power meter here
     
-    if (time < 1.0 && puckShot == 1){
+    /*
+     * Increment time to render puck at various times in its trajectory
+     */
+    if (time < 2.0 && puckShot == 1){
         time += 0.02;
+    }
+    
+    /*
+     * Move power bar back and forth between x= 230 and
+     * x = 280 (the min and max x values of power meter)
+     */
+    
+    if (power < 50 && reachedRight == 0 && stopPowerBar == 0){
+        power += 1;
+        if (power == 50) {
+            reachedRight = 1;
+        }
+    } else if (power <= 50 && reachedRight == 1 && stopPowerBar == 0){
+        power += -1;
+        if (power == 0){
+            reachedRight = 0;
+        }
     }
     
 	display();
@@ -255,19 +359,55 @@ void keys(unsigned char key, int x, int y)
 {
     int i;
     
-	if(key == 'x') viewer[0] -= 1.0;
-	if(key == 'X') viewer[0] += 1.0;
-	if(key == 'y') viewer[1] -= 1.0;
-	if(key == 'Y') viewer[1] += 1.0;
-	if(key == 'z') viewer[2] -= 1.0;
-	if(key == 'Z') viewer[2] += 1.0;
+	if(key == 'x') viewer[0] -= 5.0;
+	if(key == 'X') viewer[0] += 5.0;
+	if(key == 'y') viewer[1] -= 5.0;
+	if(key == 'Y') viewer[1] += 5.0;
+	if(key == 'z') viewer[2] -= 20.0;
+	if(key == 'Z') viewer[2] += 20.0;
     
-    
+    //Stop power bar
     if(key == 'p') {
-        puckShot = 1;
+        stopPowerBar = 1;
+        velocity = (power/50.0)*100.0;
     }
     
+    //Shoot puck with space bar (note: 32 is ASCII code for space)
+    if(key == 32) {
+        puckShot = 1;
+    }
+   
 	display();
+}
+
+/*
+ * Used to implement special keys (e.g. arrow keys) in
+ * OpenGL. In my case, I will be adjusting the swivel angle
+ * with the left/right keys and the tilt angle with the 
+ * up/down keys.
+ */
+
+void special(int key, int x, int y)
+{
+    switch (key)
+    {
+        case GLUT_KEY_LEFT:
+            swivel -= 1.0;
+            break;
+        case GLUT_KEY_RIGHT:
+            swivel += 1.0;
+            break;
+        case GLUT_KEY_DOWN:
+            tilt -= 1.0;
+            break;
+        case GLUT_KEY_UP:
+            tilt += 1.0;
+            break;
+        default:
+            break;
+    }
+    
+    display();
 }
 
 void readPPM( char *fname) {
@@ -355,12 +495,13 @@ int main(int argc, char** argv)
     //generateTextures(0);
     readPPM(ICE);
     generateTextures(1);
-    readPPM(BOARDS);
+    readPPM(NET);
     generateTextures(2);
     myinit();
 	glutDisplayFunc(display);
     glutIdleFunc(idle);
     glutKeyboardFunc(keys);
+    glutSpecialFunc(special);
 	glutMainLoop();
 	
 	return 0;
