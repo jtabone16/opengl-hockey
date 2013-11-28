@@ -30,13 +30,14 @@
 #define PUCK "puck.ppm"
 #define NET "net.ppm"
 #define BOARDS "boards.ppm"
+#define BLEACHERS "bleachers.ppm"
+#define STICK "stick.ppm"
 
 GLUquadricObj *quad;
 GLfloat viewer[3] = {250.0, 50.0, 1000.0};
 GLfloat reference[3] = {250.0, 50.0, 1.0};
 GLfloat puckAtTime[3]; //puck at time t
 GLfloat initPuck[3] = {250.0, 10.0, 900.0}; //initial puck coordinates
-GLfloat startPuck[3] = {250.0, 10.0, 900.0}; //starting position for puck
 GLuint imageID[6];
 int width, height;
 GLubyte *imageData;
@@ -75,9 +76,9 @@ void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat v, GLfloat t
     
     //Solve position at time t
     
-    puckAtTime[0] = startPuck[0] + (velCompX * t);
-    puckAtTime[1] = startPuck[1] + (velCompY * t) + ((1/2)*(g)*powf(t, 2));
-    puckAtTime[2] = startPuck[2] + (velCompZ * t);
+    puckAtTime[0] = 250.0 + (velCompX * t);
+    puckAtTime[1] = 10.0 + (velCompY * t) + ((1/2)*(g)*powf(t, 2));
+    puckAtTime[2] = 900.0 + (velCompZ * t);
     
 }
 
@@ -199,8 +200,133 @@ void drawGoal(void){
 void drawStick(void){
     glPushMatrix();
     
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, imageID[3]);
+    
+    //Blade of stick
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(0.0, 0.0, 0.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(0.0, 10.0, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(50.0, 10.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(50.0, 0.0, 0.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(0.0, 0.0, -5.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(0.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(0.0, 10.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(0.0, 0.0, 0.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(50.0, 0.0, -5.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(50.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(0.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(0.0, 0.0, -5.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(50.0, 0.0, 0.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(50.0, 10.0, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(50.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(50.0, 0.0, -5.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(0.0, 10.0, 0.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(0.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(50.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(50.0, 10.0, 0.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(0.0, 0.0, -5.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(0.0, 0.0, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(50.0, 0.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(50.0, 0.0, -5.0);
+    glEnd();
+    
+    //Shaft of stick
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(50.0, 0.0, 0.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(50.0, 10.0, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(290.0, 240.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(300.0, 240.0, 0.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(50.0, 10.0, 0.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(50.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(290.0, 240.0, -5.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(290.0, 240.0, 0.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(300.0, 240.0, -5.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(290.0, 240.0, -5.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(50.0, 10.0, -5.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(50.0, 0.0, -5.0);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3f(50.0, 0.0, -5.0);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(50.0, 0.0, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3f(300.0, 240.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3f(300.0, 240.0, -5.0);
+    glEnd();
+    
+    glDisable(GL_TEXTURE_2D);
     
     glPopMatrix();
+}
+
+void moveStick() {
+    
+    glRotatef(-swivel/30, 0.0, 1.0, 1.0);
+    glRotatef(-tilt/30, 1.0, 0.0, 0.0);
+    glTranslatef(220.0, 10.0, 930.0);
+    drawStick();
+    
 }
 
 void drawShotMeter(void){
@@ -243,6 +369,8 @@ void drawRink(void){
     
     glPushMatrix();
     
+    glDepthMask(0);
+    
     //Front face
     glBegin(GL_QUADS);
         glColor3f(0.0, 0.0, 0.0); //black
@@ -252,36 +380,47 @@ void drawRink(void){
         glVertex3fv(vertices[3]);
     glEnd();
     
-    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, imageID[0]);
     //Back face (note: facing this face)
     glBegin(GL_QUADS);
-        glColor3f(0.0, 0.0, 1.0); //blue
+        glTexCoord2f(0.0, 0.0);
         glVertex3fv(vertices[4]);
+        glTexCoord2f(0.0, 1.0);
         glVertex3fv(vertices[5]);
+        glTexCoord2f(1.0, 1.0);
         glVertex3fv(vertices[6]);
+        glTexCoord2f(1.0, 0.0);
         glVertex3fv(vertices[7]);
     glEnd();
     
     //Left face
     glBegin(GL_QUADS);
-        glColor3f(1.0, 0.0, 0.0); //red
+        glTexCoord2f(0.0, 0.0);
         glVertex3fv(vertices[7]);
+        glTexCoord2f(0.0, 1.0);
         glVertex3fv(vertices[6]);
+        glTexCoord2f(1.0, 1.0);
         glVertex3fv(vertices[1]);
+        glTexCoord2f(1.0, 0.0);
         glVertex3fv(vertices[0]);
     glEnd();
     
     //Right face
     glBegin(GL_QUADS);
-        glColor3f(0.0, 1.0, 0.0); //green
+        glTexCoord2f(0.0, 0.0);
         glVertex3fv(vertices[3]);
+        glTexCoord2f(0.0, 1.0);
         glVertex3fv(vertices[2]);
+        glTexCoord2f(1.0, 1.0);
         glVertex3fv(vertices[5]);
+        glTexCoord2f(1.0, 0.0);
         glVertex3fv(vertices[4]);
     glEnd();
     
+    glDepthMask(1);
+    
     //Bottom face i.e. the ice surface
-    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, imageID[1]);
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
@@ -320,13 +459,13 @@ void display(void)
     drawGoal();
     drawShotMeter();
     drawPuck();
+    moveStick();
     
     glFlush();
 	glutSwapBuffers(); /*Display next buffer*/
 }
 
 void idle(void) {
-	//Put code for power meter here
     
     /*
      * Increment time to render puck at various times in its trajectory
@@ -491,12 +630,14 @@ int main(int argc, char** argv)
 	glutCreateWindow("Hockey Guy");
     glEnable(GL_DEPTH_TEST);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    //readPPM(PUCK2);
-    //generateTextures(0);
+    readPPM(BOARDS);
+    generateTextures(0);
     readPPM(ICE);
     generateTextures(1);
     readPPM(NET);
     generateTextures(2);
+    readPPM(STICK);
+    generateTextures(3);
     myinit();
 	glutDisplayFunc(display);
     glutIdleFunc(idle);
