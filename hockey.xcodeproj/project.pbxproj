@@ -25,6 +25,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		521D0E251849562500CDA367 /* brick.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = brick.ppm; sourceTree = SOURCE_ROOT; };
 		524F2ACA1846BFA400DB2ED4 /* stick.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = stick.ppm; sourceTree = SOURCE_ROOT; };
 		5267E790183944AC00B12529 /* hockey */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = hockey; sourceTree = BUILT_PRODUCTS_DIR; };
 		52E7DA0C184438BB00FC366E /* net.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = net.ppm; sourceTree = SOURCE_ROOT; };
@@ -71,6 +72,7 @@
 		5267E792183944AC00B12529 /* hockey */ = {
 			isa = PBXGroup;
 			children = (
+				521D0E251849562500CDA367 /* brick.ppm */,
 				524F2ACA1846BFA400DB2ED4 /* stick.ppm */,
 				52E7DA0F1844457D00FC366E /* bleachers.ppm */,
 				52E7DA0D18443A0000FC366E /* boards.ppm */,

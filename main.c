@@ -31,6 +31,7 @@
 #define NET "net.ppm"
 #define BOARDS "boards.ppm"
 #define BLEACHERS "bleachers.ppm"
+#define WALL "brick.ppm"
 #define STICK "stick.ppm"
 
 GLUquadricObj *quad;
@@ -57,7 +58,7 @@ void myinit(void)
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(90.0, 1.0, 1.0, 1000.0);
+	gluPerspective(90.0, 1.0, 1.0, 1100.0);
 	glMatrixMode(GL_MODELVIEW);
     quad = gluNewQuadric();
     gluQuadricDrawStyle(quad, GLU_FILL);
@@ -206,113 +207,113 @@ void drawStick(void){
     //Blade of stick
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(0.0, 0.0, 0.0);
+        glVertex3f(220.0, 0.0, 930.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(0.0, 10.0, 0.0);
+        glVertex3f(220.0, 10.0, 930.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(50.0, 10.0, 0.0);
+        glVertex3f(270.0, 10.0, 930.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(50.0, 0.0, 0.0);
+        glVertex3f(270.0, 0.0, 930.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(0.0, 0.0, -5.0);
+        glVertex3f(220.0, 0.0, 925.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(0.0, 10.0, -5.0);
+        glVertex3f(220.0, 10.0, 925.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(0.0, 10.0, 0.0);
+        glVertex3f(220.0, 10.0, 930.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(0.0, 0.0, 0.0);
+        glVertex3f(220.0, 0.0, 930.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(50.0, 0.0, -5.0);
+        glVertex3f(270.0, 0.0, 925.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(50.0, 10.0, -5.0);
+        glVertex3f(270.0, 10.0, 925.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(0.0, 10.0, -5.0);
+        glVertex3f(220.0, 10.0, 925.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(0.0, 0.0, -5.0);
+        glVertex3f(220.0, 0.0, 925.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(50.0, 0.0, 0.0);
+        glVertex3f(270.0, 0.0, 930.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(50.0, 10.0, 0.0);
+        glVertex3f(270.0, 10.0, 930.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(50.0, 10.0, -5.0);
+        glVertex3f(270.0, 10.0, 925.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(50.0, 0.0, -5.0);
+        glVertex3f(270.0, 0.0, 925.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(0.0, 10.0, 0.0);
+        glVertex3f(220.0, 10.0, 930.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(0.0, 10.0, -5.0);
+        glVertex3f(220.0, 10.0, 925.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(50.0, 10.0, -5.0);
+        glVertex3f(270.0, 10.0, 925.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(50.0, 10.0, 0.0);
+        glVertex3f(270.0, 10.0, 930.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(0.0, 0.0, -5.0);
+        glVertex3f(220.0, 0.0, 925.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(0.0, 0.0, 0.0);
+        glVertex3f(220.0, 0.0, 930.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(50.0, 0.0, 0.0);
+        glVertex3f(270.0, 0.0, 930.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(50.0, 0.0, -5.0);
+        glVertex3f(270.0, 0.0, 925.0);
     glEnd();
     
     //Shaft of stick
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(50.0, 0.0, 0.0);
+        glVertex3f(270.0, 0.0, 930.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(50.0, 10.0, 0.0);
+        glVertex3f(270.0, 10.0, 930.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(290.0, 240.0, 0.0);
+        glVertex3f(510.0, 250.0, 930.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(300.0, 240.0, 0.0);
+        glVertex3f(520.0, 250.0, 930.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(50.0, 10.0, 0.0);
+        glVertex3f(270.0, 10.0, 930.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(50.0, 10.0, -5.0);
+        glVertex3f(270.0, 10.0, 925.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(290.0, 240.0, -5.0);
+        glVertex3f(510.0, 250.0, 925.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(290.0, 240.0, 0.0);
+        glVertex3f(510.0, 250.0, 930.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(300.0, 240.0, -5.0);
+        glVertex3f(520.0, 250.0, 925.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(290.0, 240.0, -5.0);
+        glVertex3f(510.0, 250.0, 925.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(50.0, 10.0, -5.0);
+        glVertex3f(270.0, 10.0, 925.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(50.0, 0.0, -5.0);
+        glVertex3f(270.0, 0.0, 925.0);
     glEnd();
     
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3f(50.0, 0.0, -5.0);
+        glVertex3f(270.0, 0.0, 925.0);
         glTexCoord2f(0.0, 1.0);
-        glVertex3f(50.0, 0.0, 0.0);
+        glVertex3f(270.0, 0.0, 930.0);
         glTexCoord2f(1.0, 1.0);
-        glVertex3f(300.0, 240.0, 0.0);
+        glVertex3f(520.0, 250.0, 930.0);
         glTexCoord2f(1.0, 0.0);
-        glVertex3f(300.0, 240.0, -5.0);
+        glVertex3f(520.0, 250.0, 925.0);
     glEnd();
     
     glDisable(GL_TEXTURE_2D);
@@ -322,9 +323,14 @@ void drawStick(void){
 
 void moveStick() {
     
-    glRotatef(-swivel/30, 0.0, 1.0, 1.0);
-    glRotatef(-tilt/30, 1.0, 0.0, 0.0);
-    glTranslatef(220.0, 10.0, 930.0);
+    glTranslatef(-30.0, -10.0, 10.0);
+    glRotatef(-swivel/50, 0.0, 1.0, 0.0);
+    glRotatef(tilt/80, 1.0, 0.0, 0.0);
+    glTranslatef(30.0, 10.0, -10.0); //Stick position at (220, 0, 930) translated to puck
+                                     //position of (250, 10, 920)
+                                     // Note: puck-z is 920 to take into account its radius
+                                     // of 20
+    
     drawStick();
     
 }
@@ -364,8 +370,9 @@ void drawShotMeter(void){
 
 
 void drawRink(void){
-    point3 vertices[8] = { {0.0, 0.0, 1000.0}, {0.0, 500.0, 1000.0}, {500.0, 500.0, 1000.0}, {500.0, 0.0, 1000.0},
-        {500.0, 0.0, 1.0}, {500.0, 500.0, 1.0}, {0.0, 500.0, 1.0}, {0.0, 0.0, 1.0}};
+    point3 vertices[12] = { {0.0, 0.0, 1000.0}, {0.0, 500.0, 1000.0}, {500.0, 500.0, 1000.0}, {500.0, 0.0, 1000.0},
+        {500.0, 0.0, 1.0}, {500.0, 500.0, 1.0}, {0.0, 500.0, 1.0}, {0.0, 0.0, 1.0}, {0.0, 250.0, 1000.0}, {500.0, 250.0, 1000.0},
+        {0.0, 250.0, 1.0}, {500.0, 250.0, 1.0}};
     
     glPushMatrix();
     
@@ -380,45 +387,102 @@ void drawRink(void){
         glVertex3fv(vertices[3]);
     glEnd();
     
+    /*Boards*/
+    
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, imageID[0]);
-    //Back face (note: facing this face)
+    
+    //Back face bottom half (note: facing this face)
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
         glVertex3fv(vertices[4]);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3fv(vertices[11]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[10]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[7]);
+    glEnd();
+    
+    //Left face bottom half
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3fv(vertices[7]);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3fv(vertices[10]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[8]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[0]);
+    glEnd();
+    
+    //Right face bottom half
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3fv(vertices[3]);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3fv(vertices[9]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[11]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[4]);
+    glEnd();
+    
+    /*Walls/Ceiling*/
+    
+    glBindTexture(GL_TEXTURE_2D, imageID[4]);
+    
+    //Back face top half
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3fv(vertices[11]);
         glTexCoord2f(0.0, 1.0);
         glVertex3fv(vertices[5]);
         glTexCoord2f(1.0, 1.0);
         glVertex3fv(vertices[6]);
         glTexCoord2f(1.0, 0.0);
-        glVertex3fv(vertices[7]);
+        glVertex3fv(vertices[10]);
     glEnd();
     
-    //Left face
+    //Left face top half
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3fv(vertices[7]);
+        glVertex3fv(vertices[10]);
         glTexCoord2f(0.0, 1.0);
         glVertex3fv(vertices[6]);
         glTexCoord2f(1.0, 1.0);
         glVertex3fv(vertices[1]);
         glTexCoord2f(1.0, 0.0);
-        glVertex3fv(vertices[0]);
+        glVertex3fv(vertices[8]);
     glEnd();
     
-    //Right face
+    //Right face top half
     glBegin(GL_QUADS);
         glTexCoord2f(0.0, 0.0);
-        glVertex3fv(vertices[3]);
+        glVertex3fv(vertices[9]);
         glTexCoord2f(0.0, 1.0);
         glVertex3fv(vertices[2]);
         glTexCoord2f(1.0, 1.0);
         glVertex3fv(vertices[5]);
         glTexCoord2f(1.0, 0.0);
-        glVertex3fv(vertices[4]);
+        glVertex3fv(vertices[11]);
+    glEnd();
+    
+    //Top face
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3fv(vertices[1]);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3fv(vertices[6]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[5]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[2]);
     glEnd();
     
     glDepthMask(1);
+    
+    /*Ice*/
     
     //Bottom face i.e. the ice surface
     glBindTexture(GL_TEXTURE_2D, imageID[1]);
@@ -433,19 +497,45 @@ void drawRink(void){
         glVertex3fv(vertices[4]);
     glEnd();
     
-    //Top face
     glDisable(GL_TEXTURE_2D);
-    glBegin(GL_QUADS);
-        glColor3f(1.0, 0.0, 1.0); //purple
-        glVertex3fv(vertices[1]);
-        glVertex3fv(vertices[6]);
-        glVertex3fv(vertices[5]);
-        glVertex3fv(vertices[2]);
-    glEnd();
     
     glPopMatrix();
 
     
+}
+
+void resetPuck(void) {
+    puckAtTime[0] = initPuck[0];
+    puckAtTime[1] = initPuck[1];
+    puckAtTime[2] = initPuck[2];
+    power = 0;
+    reachedRight = 0;
+    stopPowerBar = 0;
+    time = 0.0;
+    velocity = 0.0;
+    swivel = 0.0;
+    tilt = 0.0;
+    puckShot = 0;
+}
+
+void checkGoal(void){
+    
+    //Resets puck if the power meter is stoppped on the left border
+    // and the user shoots
+    if (velocity == 0){
+        printf("Shoot it a little harder, guy!");
+        resetPuck();
+    }
+
+    if ((puckAtTime[0] > 160 && puckAtTime[0] < 340) && (puckAtTime[1] < 190 && puckAtTime[1] > 0)
+        && (puckAtTime[2] > 110 && puckAtTime[2] < 200)){
+        puckShot = 0;
+        printf("He shoots, he scores!");
+        
+        //Reset puck
+        resetPuck();
+        
+    }
 }
 
 
@@ -468,10 +558,17 @@ void display(void)
 void idle(void) {
     
     /*
-     * Increment time to render puck at various times in its trajectory
+     * Increment time to render puck at various times in its trajectory. Puck's trajectory is rendered until puck reaches bounds
+     * of clipping volume, until time = 20, or if a goal is scored.
      */
-    if (time < 2.0 && puckShot == 1){
+    if (time < 20.0 && puckShot == 1 && puckAtTime[0] <= 500.0 && puckAtTime[0] >= 0.0 && puckAtTime[1] >= 10
+        && puckAtTime[1] <= 500 && puckAtTime[2] >= 1.0 && puckAtTime[2] <= 900.0){
         time += 0.02;
+        checkGoal();
+    }
+    else if (puckShot == 1){
+        printf("Everything but net!");
+        resetPuck();
     }
     
     /*
@@ -505,6 +602,11 @@ void keys(unsigned char key, int x, int y)
 	if(key == 'z') viewer[2] -= 20.0;
 	if(key == 'Z') viewer[2] += 20.0;
     
+    //Reset puck
+    if (key == 'r'){
+        resetPuck();
+    }
+    
     //Stop power bar
     if(key == 'p') {
         stopPowerBar = 1;
@@ -513,7 +615,9 @@ void keys(unsigned char key, int x, int y)
     
     //Shoot puck with space bar (note: 32 is ASCII code for space)
     if(key == 32) {
-        puckShot = 1;
+        if (stopPowerBar == 1){
+            puckShot = 1;
+        }
     }
    
 	display();
@@ -524,6 +628,10 @@ void keys(unsigned char key, int x, int y)
  * OpenGL. In my case, I will be adjusting the swivel angle
  * with the left/right keys and the tilt angle with the 
  * up/down keys.
+ *
+ * Note: Checking if puckShot is equal to 0 is necessary
+ * to prevent user from adjusting shot's trajectory after 
+ * taking shot.
  */
 
 void special(int key, int x, int y)
@@ -531,16 +639,24 @@ void special(int key, int x, int y)
     switch (key)
     {
         case GLUT_KEY_LEFT:
-            swivel -= 1.0;
+            if (puckShot == 0){
+                swivel -= 1.0;
+            }
             break;
         case GLUT_KEY_RIGHT:
-            swivel += 1.0;
+            if (puckShot == 0){
+                swivel += 1.0;
+            }
             break;
         case GLUT_KEY_DOWN:
-            tilt -= 1.0;
+            if (puckShot == 0){
+                tilt -= 1.0;
+            }
             break;
         case GLUT_KEY_UP:
-            tilt += 1.0;
+            if (puckShot == 0){
+                tilt += 1.0;
+            }
             break;
         default:
             break;
@@ -638,6 +754,8 @@ int main(int argc, char** argv)
     generateTextures(2);
     readPPM(STICK);
     generateTextures(3);
+    readPPM(WALL);
+    generateTextures(4);
     myinit();
 	glutDisplayFunc(display);
     glutIdleFunc(idle);
