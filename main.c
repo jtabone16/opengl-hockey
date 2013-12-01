@@ -903,7 +903,7 @@ void keys(unsigned char key, int x, int y)
     //Stop power bar
     if(key == 'p') {
         stopPowerBar = 1;
-        velocity = (power/50.0)*100.0;
+        velocity = (power/50.0)*250.0;
     }
     
     if (key == 'c'){
