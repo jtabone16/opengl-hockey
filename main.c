@@ -615,27 +615,31 @@ void drawShotMeter(void){
 
 
 void drawRink(void){
-    point3 vertices[12] = { {0.0, 0.0, 1000.0}, {0.0, 500.0, 1000.0}, {500.0, 500.0, 1000.0}, {500.0, 0.0, 1000.0},
-        {500.0, 0.0, 1.0}, {500.0, 500.0, 1.0}, {0.0, 500.0, 1.0}, {0.0, 0.0, 1.0}, {0.0, 250.0, 1000.0}, {500.0, 250.0, 1000.0},
+    point3 vertices[12] = { {0.0, 0.0, 1000.0}, {0.0, 500.0, 1000.0}, {500.0, 500.0, 1000.0},
+        {500.0, 0.0, 1000.0},{500.0, 0.0, 1.0}, {500.0, 500.0, 1.0}, {0.0, 500.0, 1.0},
+        {0.0, 0.0, 1.0}, {0.0, 250.0, 1000.0}, {500.0, 250.0, 1000.0},
         {0.0, 250.0, 1.0}, {500.0, 250.0, 1.0}};
     
     glPushMatrix();
     
     glDepthMask(0);
     
-    //Front face
-    glBegin(GL_QUADS);
-        glColor3f(0.0, 0.0, 0.0); //black
-        glVertex3fv(vertices[0]);
-        glVertex3fv(vertices[1]);
-        glVertex3fv(vertices[2]);
-        glVertex3fv(vertices[3]);
-    glEnd();
-    
     /*Boards*/
     
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, imageID[0]);
+    
+    //Front face bottom half
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3fv(vertices[0]);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3fv(vertices[8]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[9]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[3]);
+    glEnd();
     
     //Back face bottom half (note: facing this face)
     glBegin(GL_QUADS);
@@ -676,6 +680,18 @@ void drawRink(void){
     /*Walls/Ceiling*/
     
     glBindTexture(GL_TEXTURE_2D, imageID[4]);
+    
+    //Front face top half
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex3fv(vertices[8]);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3fv(vertices[1]);
+        glTexCoord2f(1.0, 1.0);
+        glVertex3fv(vertices[2]);
+        glTexCoord2f(1.0, 0.0);
+        glVertex3fv(vertices[9]);
+    glEnd();
     
     //Back face top half
     glBegin(GL_QUADS);
@@ -867,14 +883,31 @@ void idle(void) {
         }
     }
     
+    /* Change camera view
+     * puckCam = 0 -> Stick cam
+     * puckCam = 1 -> Puck cam
+     * puckCam = 2 -> Goal cam
+     *
+     */
     if (puckCam == 1){
         viewer[0] = puckAtTime[0];
         viewer[1] = puckAtTime[1];
         viewer[2] = puckAtTime[2] - 25;
-    } else{
+    } else if (puckCam == 2){
+        viewer[0] = 250.0;
+        viewer[1] = 100.0;
+        viewer[2] = 210.0;
+        reference[0] = puckAtTime [0];
+        reference[1] = puckAtTime [1];
+        reference[2] = puckAtTime [2];
+    }
+    else if (puckCam == 0){
         viewer[0] = 250.0;
         viewer[1] = 50.0;
         viewer[2] = 1000.0;
+        reference[0] = 250.0;
+        reference[1] = 50.0;
+        reference[2] = 1.0;
     }
     
     //Flash 'Goals Scored' yellow if goal scored
@@ -907,7 +940,7 @@ void keys(unsigned char key, int x, int y)
     }
     
     if (key == 'c'){
-        puckCam = 1;
+        puckCam += 1;
     }
     
     //Shoot puck with space bar if power bar is stopped
