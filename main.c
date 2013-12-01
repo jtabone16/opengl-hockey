@@ -185,8 +185,8 @@ void renderUI (void){
     strcpy(text[8], "1. Press p to stop power meter");
     strcpy(text[9], "2. Aim puck using arrow keys");
     strcpy(text[10], "3. Press space to shoot!");
-    strcpy(text[11], "Press c to change to puck view");
-    strcpy(text[12], "Press r to reset shot");
+    strcpy(text[11], "Press c to toggle camera");
+    strcpy(text[12], "Press r to reset shot/camera");
     sprintf(text[20], "%d", timer);
     
     //Score
