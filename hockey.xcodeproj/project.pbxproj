@@ -16,7 +16,7 @@
 		5267E78E183944AC00B12529 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
+			dstPath = "~/Desktop";
 			dstSubfolderSpec = 0;
 			files = (
 			);

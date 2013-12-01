@@ -26,6 +26,15 @@
 #endif
 
 #define PI 3.14159
+#if defined(__APPLE__)
+#define ICE "/Users/John/Desktop/hockey/ice.ppm"
+#define PUCK "/Users/John/Desktop/hockey/puck.ppm"
+#define NET "/Users/John/Desktop/hockey/net.ppm"
+#define BOARDS "/Users/John/Desktop/hockey/boards.ppm"
+#define BLEACHERS "/Users/John/Desktop/hockey/bleachers.ppm"
+#define WALL "/Users/John/Desktop/hockey/brick.ppm"
+#define STICK "/Users/John/Desktop/hockey/stick.ppm"
+#else
 #define ICE "ice.ppm"
 #define PUCK "puck.ppm"
 #define NET "net.ppm"
@@ -33,6 +42,7 @@
 #define BLEACHERS "bleachers.ppm"
 #define WALL "brick.ppm"
 #define STICK "stick.ppm"
+#endif
 
 GLUquadricObj *quad;
 GLfloat viewer[3] = {250.0, 50.0, 1000.0};
