@@ -52,6 +52,15 @@ GLfloat velocity;
 GLfloat swivel;
 GLfloat tilt;
 int puckShot = 0;
+int puckCam = 0;
+char text[25][80];
+int timer = 90;
+int score = 0;
+GLfloat scoreColor[3] = {1.0, 1.0, 1.0};
+int textNum = 999;
+int flash = 0;
+int i;
+
 
 void myinit(void)
 {
@@ -65,6 +74,228 @@ void myinit(void)
     gluQuadricOrientation(quad, GLU_INSIDE);
     gluQuadricNormals(quad, GLU_SMOOTH);
 
+}
+
+/*
+ * Renders text based on puck's status
+ */
+
+void renderPuckText(void){
+    
+    int lengthOfText, i;
+    lengthOfText = (int)strlen(text[textNum]);
+    
+    //Conditionals for text banner size based
+    //on message
+    if (textNum > 2){
+        glBegin(GL_QUADS);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(155.0, 225.0, 799.0);
+            glVertex3f(155.0, 245.0, 799.0);
+            glVertex3f(350.0, 245.0, 799.0);
+            glVertex3f(350.0, 225.0, 799.0);
+        glEnd();
+        
+        glBegin(GL_LINE_STRIP);
+            glColor3f(1.0, 1.0, 1.0);
+            glVertex3f(156.0, 225.0, 800.0);
+            glVertex3f(156.0, 245.0, 800.0);
+            glVertex3f(350.0, 245.0, 800.0);
+            glVertex3f(350.0, 225.0, 800.0);
+            glVertex3f(156.0, 225.0, 800.0);
+        glEnd();
+
+    } else if (textNum < 2){
+        glBegin(GL_QUADS);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(210.0, 225.0, 799.0);
+            glVertex3f(210.0, 245.0, 799.0);
+            glVertex3f(300.0, 245.0, 799.0);
+            glVertex3f(300.0, 225.0, 799.0);
+        glEnd();
+        
+        glBegin(GL_LINE_STRIP);
+            glColor3f(1.0, 1.0, 1.0);
+            glVertex3f(210.0, 225.0, 800.0);
+            glVertex3f(210.0, 245.0, 800.0);
+            glVertex3f(300.0, 245.0, 800.0);
+            glVertex3f(300.0, 225.0, 800.0);
+            glVertex3f(210.0, 225.0, 800.0);
+        glEnd();
+        
+    } else if (textNum == 2){
+        glBegin(GL_QUADS);
+            glColor3f(0.0, 0.0, 0.0);
+            glVertex3f(193.0, 225.0, 799.0);
+            glVertex3f(193.0, 245.0, 799.0);
+            glVertex3f(320.0, 245.0, 799.0);
+            glVertex3f(320.0, 225.0, 799.0);
+        glEnd();
+        
+        glBegin(GL_LINE_STRIP);
+            glColor3f(1.0, 1.0, 1.0);
+            glVertex3f(193.0, 225.0, 800.0);
+            glVertex3f(193.0, 245.0, 800.0);
+            glVertex3f(320.0, 245.0, 800.0);
+            glVertex3f(320.0, 225.0, 800.0);
+            glVertex3f(193.0, 225.0, 800.0);
+        glEnd();
+    }
+    
+
+    glPushMatrix();
+    
+    glTranslatef(215.0, 230.0, 800.0);
+    glScalef(0.1, 0.1, 0.1);
+    
+    //Conditionals to center text based on message
+    if (textNum > 2){
+        glTranslatef(-(lengthOfText*20), 0.0, 0.0);
+    } else if (textNum == 2){
+        glTranslatef(-(lengthOfText*10), 0.0, 0.0);
+    }
+    
+    for (i = 0; i < lengthOfText; i++){
+        glColor3f(1.0, 1.0, 1.0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[textNum][i]);
+
+    }
+    
+    glPopMatrix();
+}
+
+/*
+ * Renders UI text
+ */
+
+void renderUI (void){
+    int i;
+    //UI text
+    sprintf(text[7], "Goals Scored: %d", score);
+    strcpy(text[8], "1. Press p to stop power meter");
+    strcpy(text[9], "2. Aim puck using arrow keys");
+    strcpy(text[10], "3. Press space to shoot!");
+    strcpy(text[11], "Press c to change to puck view");
+    strcpy(text[12], "Press r to reset shot");
+    sprintf(text[20], "%d", timer);
+    
+    //Score
+    glPushMatrix();
+
+    glTranslatef(200.0, 180.0, 800.0);
+    glScalef(0.1, 0.1, 0.1);
+    
+    for (i = 0; i < (int)strlen(text[7]); i++){
+        glColor3f(scoreColor[0], scoreColor[1], scoreColor[2]);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[7][i]);
+        
+    }
+    glPopMatrix();
+    
+    //Draw banner for score
+    
+    glBegin(GL_QUADS);
+        glColor3f(0.0, 0.0, 0.0);
+        glVertex3f(195.0, 175.0, 799.0);
+        glVertex3f(195.0, 195.0, 799.0);
+        glVertex3f(310.0, 195.0, 799.0);
+        glVertex3f(310.0, 175.0, 799.0);
+    glEnd();
+    
+    glBegin(GL_LINE_STRIP);
+        glColor3f(scoreColor[0], scoreColor[1], scoreColor[2]);
+        glVertex3f(195.0, 175.0, 800.0);
+        glVertex3f(195.0, 195.0, 800.0);
+        glVertex3f(310.0, 195.0, 800.0);
+        glVertex3f(310.0, 175.0, 800.0);
+        glVertex3f(195.0, 175.0, 800.0);
+    glEnd();
+    
+    //Controls
+    glPushMatrix();
+    
+    glTranslatef(200.0, 140.0, 800.0);
+    glScalef(0.05, 0.05, 0.05);
+    
+    for (i = 0; i < (int)strlen(text[8]); i++){
+        glColor3f(1.0, 1.0, 1.0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[8][i]);
+        
+    }
+    glPopMatrix();
+    
+    
+    glPushMatrix();
+    
+    glTranslatef(200.0, 130.0, 800.0);
+    glScalef(0.05, 0.05, 0.05);
+
+    for (i = 0; i < (int)strlen(text[9]); i++){
+        glColor3f(1.0, 1.0, 1.0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[9][i]);
+        
+    }
+    glPopMatrix();
+    
+    
+    glPushMatrix();
+    
+    glTranslatef(200.0, 120.0, 800.0);
+    glScalef(0.05, 0.05, 0.05);
+    
+    for (i = 0; i < (int)strlen(text[10]); i++){
+        glColor3f(1.0, 1.0, 1.0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[10][i]);
+        
+    }
+    glPopMatrix();
+    
+    
+    glPushMatrix();
+    
+    glTranslatef(200.0, 110.0, 800.0);
+    glScalef(0.05, 0.05, 0.05);
+    
+    for (i = 0; i < (int)strlen(text[11]); i++){
+        glColor3f(1.0, 1.0, 1.0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[11][i]);
+        
+    }
+    glPopMatrix();
+    
+    
+    glPushMatrix();
+    
+    glTranslatef(200.0, 100.0, 800.0);
+    glScalef(0.05, 0.05, 0.05);
+    
+    for (i = 0; i < (int)strlen(text[12]); i++){
+        glColor3f(1.0, 1.0, 1.0);
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, text[12][i]);
+        
+    }
+    glPopMatrix();
+    
+    //Draw banner for controls
+    
+    glBegin(GL_QUADS);
+        glColor3f(0.0, 0.0, 0.0);
+        glVertex3f(198.0, 98.0, 799.0);
+        glVertex3f(198.0, 146.0, 799.0);
+        glVertex3f(310.0, 146.0, 799.0);
+        glVertex3f(310.0, 98.0, 799.0);
+    glEnd();
+    
+    glBegin(GL_LINE_STRIP);
+        glColor3f(1.0, 1.0, 1.0);
+        glVertex3f(198.0, 98.0, 800.0);
+        glVertex3f(198.0, 146.0, 800.0);
+        glVertex3f(310.0, 146.0, 800.0);
+        glVertex3f(310.0, 98.0, 800.0);
+        glVertex3f(198.0, 98.0, 800.0);
+    glEnd();
+
+    
 }
 
 void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat v, GLfloat t){
@@ -323,6 +554,8 @@ void drawStick(void){
 
 void moveStick() {
     
+    glPushMatrix();
+    
     glTranslatef(-30.0, -10.0, 10.0);
     glRotatef(-swivel/50, 0.0, 1.0, 0.0);
     glRotatef(tilt/80, 1.0, 0.0, 0.0);
@@ -332,6 +565,8 @@ void moveStick() {
                                      // of 20
     
     drawStick();
+    
+    glPopMatrix();
     
 }
 
@@ -516,6 +751,8 @@ void resetPuck(void) {
     swivel = 0.0;
     tilt = 0.0;
     puckShot = 0;
+    puckCam = 0;
+
 }
 
 void checkGoal(void){
@@ -523,16 +760,43 @@ void checkGoal(void){
     //Resets puck if the power meter is stoppped on the left border
     // and the user shoots
     if (velocity == 0){
-        printf("Shoot it a little harder, guy!");
+        textNum = 6;
         resetPuck();
     }
-
+    
+    
+    //Goal scored
     if ((puckAtTime[0] > 160 && puckAtTime[0] < 340) && (puckAtTime[1] < 190 && puckAtTime[1] > 0)
         && (puckAtTime[2] > 110 && puckAtTime[2] < 200)){
-        puckShot = 0;
-        printf("He shoots, he scores!");
+        textNum = 1;
+        score += 1;
+        resetPuck();
         
-        //Reset puck
+    }
+    
+    //Puck hits crossbar
+    if ((puckAtTime[0] >= 160 && puckAtTime[0] <= 340)
+        && (puckAtTime[1] >= 200 && puckAtTime[1] <= 220)
+        && (puckAtTime[2] >= 190 && puckAtTime[2] <= 215)){
+        textNum = 5;
+        resetPuck();
+        
+    }
+    
+    //Puck hits left post
+    if ((puckAtTime[0] >= 140 && puckAtTime[0] <= 160)
+        && (puckAtTime[1] >= 10 && puckAtTime[1] <= 220)
+        && (puckAtTime[2] >= 190 && puckAtTime[2] <= 210)){
+        textNum = 3;
+        resetPuck();
+        
+    }
+    
+    //Puck hits right post
+    if ((puckAtTime[0] >= 340 && puckAtTime[0] <= 360)
+        && (puckAtTime[1] >= 10 && puckAtTime[1] <= 220)
+        && (puckAtTime[2] >= 190 && puckAtTime[2] <= 210)){
+        textNum = 4;
         resetPuck();
         
     }
@@ -550,6 +814,11 @@ void display(void)
     drawShotMeter();
     drawPuck();
     moveStick();
+    renderUI();
+    if (textNum != 999){
+        renderPuckText();
+    }
+
     
     glFlush();
 	glutSwapBuffers(); /*Display next buffer*/
@@ -567,7 +836,7 @@ void idle(void) {
         checkGoal();
     }
     else if (puckShot == 1){
-        printf("Everything but net!");
+        textNum = 2;
         resetPuck();
     }
     
@@ -588,19 +857,33 @@ void idle(void) {
         }
     }
     
+    if (puckCam == 1){
+        viewer[0] = puckAtTime[0];
+        viewer[1] = puckAtTime[1];
+        viewer[2] = puckAtTime[2] - 25;
+    } else{
+        viewer[0] = 250.0;
+        viewer[1] = 50.0;
+        viewer[2] = 1000.0;
+    }
+    
+    //Flash 'Goals Scored' yellow if goal scored
+    if (textNum == 1){
+        scoreColor[2] = 0.0+flash;
+        if (flash == 0){
+            flash++;
+        } else if (flash == 1) {
+            flash--;
+        }
+    } else{
+        scoreColor[2] = 1.0;
+    }
+    
 	display();
 }
 
 void keys(unsigned char key, int x, int y)
 {
-    int i;
-    
-	if(key == 'x') viewer[0] -= 5.0;
-	if(key == 'X') viewer[0] += 5.0;
-	if(key == 'y') viewer[1] -= 5.0;
-	if(key == 'Y') viewer[1] += 5.0;
-	if(key == 'z') viewer[2] -= 20.0;
-	if(key == 'Z') viewer[2] += 20.0;
     
     //Reset puck
     if (key == 'r'){
@@ -613,11 +896,25 @@ void keys(unsigned char key, int x, int y)
         velocity = (power/50.0)*100.0;
     }
     
-    //Shoot puck with space bar (note: 32 is ASCII code for space)
+    if (key == 'c'){
+        puckCam = 1;
+    }
+    
+    //Shoot puck with space bar if power bar is stopped
+    //(note: 32 is ASCII code for space)
     if(key == 32) {
         if (stopPowerBar == 1){
             puckShot = 1;
         }
+    }
+    
+    if (key == 'l'){
+        printf("x = %f", puckAtTime[0]);
+        printf("\n");
+        printf("y = %f", puckAtTime[1]);
+        printf("\n");
+        printf("z = %f", puckAtTime[2]);
+        printf("\n");
     }
    
 	display();
@@ -739,6 +1036,19 @@ void generateTextures(int IDnum ) {
 
 int main(int argc, char** argv)
 {
+    /*
+     * Setting the in-game text
+     */
+    
+    //Puck status text
+    strcpy(text[0],"Shoot the puck!");
+    strcpy(text[1],"What a goal!");
+    strcpy(text[2], "Everything, but net!");
+    strcpy(text[3], "The puck hits the left post!");
+    strcpy(text[4], "The puck hits the right post!");
+    strcpy(text[5], "The puck hits the crossbar!");
+    strcpy(text[6], "Shoot it a little harder, guy!");
+    
 	glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(1000,1000);
