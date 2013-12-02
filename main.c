@@ -1,16 +1,12 @@
 /* main.c
  *
- * Currently, I have created a scene in a large 3D rectangle with texture mapped iced
- * and a puck that moves based on two key commands: 'p' and 'P'. 'p' moves the puck
- * 20 units in the positive z direction while 'P' moves the puck 50 units in the 
- * positive z direction. Also, I've rendered my power bar using various shades of green
- * and red. I'll probably end up using more of a gradient effect in my final project though.
- * As of this project check, I'm working on rendering my stick and goal, texture mapping the 
- * ice rink's seats and boards, and the physics of the actual puck movement on the ice. 
- * I will also be adding shading and texture mapping to the puck itself.
- *
- * Note: I have kept the default keys function to move along any function so that I can move
- * anywhere in my scene.
+ * A hockey mini game with a simple UI using basic projectile function physics equations 
+ * to shoot a puck towards the net. Stick is rotated based on tilt and swivel angles used 
+ * to aim shooting of puck. Tilt and swivel are set by arrow keys. Velocity is calculated 
+ * by stopping a simple power meter by pressing 'p'. After setting velocity and aiming the 
+ * puck, press space to shoot the puck. If you'd like to change the camera angle, press 'c' 
+ * before shooting the puck. After shooting the puck, text based on puck status is rendered. 
+ * If a goal is scored, your 'Goal Score' count increases. 
  *
  * Created by John Tabone on 11/7/13
  */
@@ -19,58 +15,56 @@
 #include <stdlib.h>
 #include <math.h>
 
+//Conditional used to define environment where compilation takes place
 #if defined(__APPLE__)
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
 #endif
 
+//Definitions of PI and texture locations relative to main.c
 #define PI 3.14159
-#if defined(__APPLE__)
-#define ICE "/Users/John/Desktop/hockey/ice.ppm"
-#define PUCK "/Users/John/Desktop/hockey/puck.ppm"
-#define NET "/Users/John/Desktop/hockey/net.ppm"
-#define BOARDS "/Users/John/Desktop/hockey/boards.ppm"
-#define BLEACHERS "/Users/John/Desktop/hockey/bleachers.ppm"
-#define WALL "/Users/John/Desktop/hockey/brick.ppm"
-#define STICK "/Users/John/Desktop/hockey/stick.ppm"
-#else
 #define ICE "ice.ppm"
-#define PUCK "puck.ppm"
 #define NET "net.ppm"
 #define BOARDS "boards.ppm"
 #define BLEACHERS "bleachers.ppm"
 #define WALL "brick.ppm"
 #define STICK "stick.ppm"
-#endif
 
-GLUquadricObj *quad;
-GLfloat viewer[3] = {250.0, 50.0, 1000.0};
-GLfloat reference[3] = {250.0, 50.0, 1.0};
-GLfloat puckAtTime[3]; //puck at time t
+//Global variable declarations
+GLUquadricObj *quad; //quad variable for drawing cylinders and disks
+GLfloat viewer[3] = {250.0, 50.0, 1000.0}; //viewer variable for gluLookAt()
+GLfloat reference[3] = {250.0, 50.0, 1.0}; //reference variable for gluLookAt()
+GLfloat puckAtTime[3]; //puck positionat time t
 GLfloat initPuck[3] = {250.0, 10.0, 900.0}; //initial puck coordinates
-GLuint imageID[6];
-int width, height;
-GLubyte *imageData;
-typedef GLfloat point3[3];
-point3 meter[2] = {{230.0, 150.0, 801.0}, {230.0, 170.0, 801.0}};
-GLfloat power = 0;
-int reachedRight = 0;
-int stopPowerBar = 0;
-GLfloat time = 0.0;
-GLfloat velocity;
-GLfloat swivel;
-GLfloat tilt;
-int puckShot = 0;
-int puckCam = 0;
-char text[25][80];
-int timer = 90;
-int score = 0;
-GLfloat scoreColor[3] = {1.0, 1.0, 1.0};
-int textNum = 999;
-int flash = 0;
-int i;
+GLuint imageID[5]; //holds texture ID
+int width, height; //used in readPPM()
+GLubyte *imageData; //used in readPPM()
+typedef GLfloat point3[3]; //typedef to easily store 3D vectors
+point3 meter[2] = {{230.0, 150.0, 801.0}, {230.0, 170.0, 801.0}}; //position of bar in power meter
+GLfloat power = 0; //power decided by position of bar in power meter
+int reachedRight = 0; //flag used in animation of power meter
+int stopPowerBar = 0; //flag to see if power meter was stopped
+GLfloat time = 0.0; //time used to calculate puck's position in projectile motion
+GLfloat velocity; //velocity used to calculate puck's position in projectile motion
+GLfloat swivel; //swivel angle used to calculate puck's position in projectile motion
+GLfloat tilt; //tilt angle used to calculate puck's position in projectile motion
+int puckShot = 0; //flag used to see if puck was shot
+int puckCam = 0; //flag to see which camera is active
+char text[15][40]; //stores text used in UI
+int score = 0; //stores amount of goals scored
+GLfloat scoreColor[3] = {1.0, 1.0, 1.0}; //variable used to flash 'Goals Scored' yellow
+int textNum = 999; //variable used to see which line of text is being rendered
+int flash = 0; //variable used to flash 'Goals Scored' yellow
 
+
+
+/* myinit()
+ *
+ * Init funtion called in main() that specifies the clipping volume and certain
+ * properties of the scene.
+ *
+ */
 
 void myinit(void)
 {
@@ -86,8 +80,10 @@ void myinit(void)
 
 }
 
-/*
- * Renders text based on puck's status
+/* renderPuckText()
+ *
+ * Renders pop-up text based on puck's status
+ *
  */
 
 void renderPuckText(void){
@@ -174,8 +170,10 @@ void renderPuckText(void){
     glPopMatrix();
 }
 
-/*
- * Renders UI text
+/* renderUI()
+ *
+ * Renders UI text including controls and goals scored.
+ *
  */
 
 void renderUI (void){
@@ -187,7 +185,6 @@ void renderUI (void){
     strcpy(text[10], "3. Press space to shoot!");
     strcpy(text[11], "Press c to toggle camera");
     strcpy(text[12], "Press r to reset shot/camera");
-    sprintf(text[20], "%d", timer);
     
     //Score
     glPushMatrix();
@@ -308,6 +305,14 @@ void renderUI (void){
     
 }
 
+/* shootPuck()
+ *
+ * Does all the physics behind projectile motion of the puck based on tilt/swivel angles 
+ * and initial velocity and position. In this case, we're shooting along the -z axis with
+ * y as our vertical axis and x as our horizontal axis.
+ *
+ */
+
 void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat v, GLfloat t){
     GLfloat g = -9.8; //gravity
     GLfloat swivelRadians = (swivelDegrees) * (M_PI/180);
@@ -323,6 +328,13 @@ void shootPuck (GLfloat swivelDegrees, GLfloat tiltDegrees, GLfloat v, GLfloat t
     puckAtTime[2] = 900.0 + (velCompZ * t);
     
 }
+
+/* drawPuck()
+ *
+ * Draws the puck at the puck's position at time t which is solved
+ * by shootPuck().
+ *
+ */
 
 
 void drawPuck(void){
@@ -346,6 +358,12 @@ void drawPuck(void){
     glPopMatrix();
     
 }
+
+/* drawGoal()
+ *
+ * Draws goal including the left post, right post, crossbar, and the net,
+ * which I texture map.
+ */
 
 void drawGoal(void){
     
@@ -438,6 +456,14 @@ void drawGoal(void){
     glPopMatrix();
     
 }
+
+/* drawStick()
+ *
+ * Draw a classic, wooden stick behind the puck facing the -z direction. 
+ * Decided to draw a lefty stick rather than a righty. However, I'll 
+ * definitely implement a righty in due time.
+ *
+ */
 
 void drawStick(void){
     glPushMatrix();
@@ -562,6 +588,18 @@ void drawStick(void){
     glPopMatrix();
 }
 
+/* moveStick()
+ *
+ * Moves the stick drawn by drawStick() based on the tilt and swivel angles 
+ * incremented or decremented by the arrow keys. Stick position at (220, 0, 930) 
+ * translated to puck position of (250, 10, 920) so that the stick would rotate
+ * about the puck for a more realistic effect. After applying transformations to
+ * the stick, drawStick() is called.
+ *
+ * Note: puck-z is 920 to take into account its radius of 20
+ *
+ */
+
 void moveStick() {
     
     glPushMatrix();
@@ -569,16 +607,22 @@ void moveStick() {
     glTranslatef(-30.0, -10.0, 10.0);
     glRotatef(-swivel/50, 0.0, 1.0, 0.0);
     glRotatef(tilt/80, 1.0, 0.0, 0.0);
-    glTranslatef(30.0, 10.0, -10.0); //Stick position at (220, 0, 930) translated to puck
-                                     //position of (250, 10, 920)
-                                     // Note: puck-z is 920 to take into account its radius
-                                     // of 20
+    glTranslatef(30.0, 10.0, -10.0);
     
     drawStick();
     
     glPopMatrix();
     
 }
+
+/* drawShotMeter()
+ *
+ * Draws a shot meter that helps determine velocity based on the position of the moving 
+ * bar when the user stops it by pressing the 'p' key. The meter's colors range from
+ * dark red to dark green (left to right) with dark red signifying a low velocity and 
+ * dark green signifying a high velocity.
+ *
+ */
 
 void drawShotMeter(void){
     int i;
@@ -613,6 +657,15 @@ void drawShotMeter(void){
     
 }
 
+/* drawRink()
+ *
+ * Draws our hockey rink including the ice, boards, and walls/ceiling. All are texture mapped.
+ * Decided on a brick wall instead of actual bleachers because of the insane difficulty of 
+ * finding a bleacher or hockey glass texture online. And I'm definitely no artist so drawing
+ * actual bleachers was out of the question (for now). I feel that the choice of a brick texture
+ * for the walls and ceiling gives the project a nice vintage video game look.
+ *
+ */
 
 void drawRink(void){
     point3 vertices[12] = { {0.0, 0.0, 1000.0}, {0.0, 500.0, 1000.0}, {500.0, 500.0, 1000.0},
@@ -765,6 +818,14 @@ void drawRink(void){
     
 }
 
+/* resetPuck()
+ *
+ * Resets the puck to its initial position. Along with the puck's initial position, several
+ * other parameters key in evaluating the puck's position and status (goal, no goal, post, etc.)
+ * are reset as well.
+ *
+ */
+
 void resetPuck(void) {
     puckAtTime[0] = initPuck[0];
     puckAtTime[1] = initPuck[1];
@@ -780,6 +841,19 @@ void resetPuck(void) {
     puckCam = 0;
 
 }
+
+/* checkGoal()
+ *
+ * The brain of my hockey mini game. The following checks are made:
+ *      1. Checks if velocity is 0. If so, puck is reset and textNum is set to correspond to my 
+ *         text array that stores all of my UI text.
+ *      2. Checks if a goal is scored. If so, score is incremenetd, textNum is set, and puck is
+ *         reset.
+ *      3. Checks if puck hits crossbar. If so, textNum is set and puck is reset.
+ *      4. Checks if puck hits left post. If so, textNum is set and puck is reset.
+ *      5. Checks if puck hits right post. If so, textNum is set and puck is reset.
+ *
+ */
 
 void checkGoal(void){
     
@@ -828,6 +902,21 @@ void checkGoal(void){
     }
 }
 
+/* display()
+ *
+ * Our standard display function. Calls all the functions that draws our scene including:
+ *      drawRink()
+ *      drawGoal()
+ *      drawShotMeter()
+ *      drawPuck()
+ *      moveStick() --> Calls drawStick()
+ *      renderUI()
+ *      renderPuckText() --> Only called when textNum is not at its default value of 999
+ * 
+ * Also, gluLookAt() is called to control the camera.
+ *
+ */
+
 
 void display(void)
 {
@@ -849,6 +938,21 @@ void display(void)
     glFlush();
 	glutSwapBuffers(); /*Display next buffer*/
 }
+
+/* idle()
+ *
+ * My idle function does a couple of things:
+ *      1. Checks if the puck is going out of bounds by checking puck's position stored
+ *         in puckAtTime. If out of bonds, the puck is reset and textNum is set to 2. 
+ *         If not out of bounds, checkGoal() is called to see if a goal is scored.
+ *         (Note: I left out collision detection out of this version, but it's ont my to-do list)
+ *      2. Controls the animation of the bar moving back and forth along the shot meter. Uses a
+ *         reachedRight flag to decide a negative or positive translation along the shot meter 
+ *         based on the value of power.
+ *      3. Sets camera values based on value of puckCam set by the user pressing the 'c' key. 
+ *      4. Rapidly flashes the 'Goals Scored' text in my UI yellow when a goal is scored.
+ *
+ */
 
 void idle(void) {
     
@@ -910,7 +1014,10 @@ void idle(void) {
         reference[2] = 1.0;
     }
     
-    //Flash 'Goals Scored' yellow if goal scored
+    /*
+     * Flash 'Goals Scored' yellow if goal scored
+     */
+    
     if (textNum == 1){
         scoreColor[2] = 0.0+flash;
         if (flash == 0){
@@ -925,15 +1032,30 @@ void idle(void) {
 	display();
 }
 
+/* keys()
+ *
+ * Contains the controls of my game:
+ *      r - Resets the puck and shot
+ *      p - Stops power bar
+ *      c - Changes camera view
+ *      32(ASCII code for 'Space' key) - Shoot the puck after stopping shot power meter
+ *
+ * And a debug tool:
+ *      l - Provides the position of the puck in the terminal output
+ *
+ */
+
 void keys(unsigned char key, int x, int y)
 {
     
     //Reset puck
+    
     if (key == 'r'){
         resetPuck();
     }
     
     //Stop power bar
+    
     if(key == 'p') {
         stopPowerBar = 1;
         velocity = (power/50.0)*250.0;
@@ -945,11 +1067,15 @@ void keys(unsigned char key, int x, int y)
     
     //Shoot puck with space bar if power bar is stopped
     //(note: 32 is ASCII code for space)
+
     if(key == 32) {
         if (stopPowerBar == 1){
             puckShot = 1;
         }
     }
+    
+    //Used for debugging purposes to calculate the position of the puck on
+    //click of 'l'
     
     if (key == 'l'){
         printf("x = %f", puckAtTime[0]);
@@ -963,7 +1089,8 @@ void keys(unsigned char key, int x, int y)
 	display();
 }
 
-/*
+/* special()
+ *
  * Used to implement special keys (e.g. arrow keys) in
  * OpenGL. In my case, I will be adjusting the swivel angle
  * with the left/right keys and the tilt angle with the 
@@ -1004,6 +1131,12 @@ void special(int key, int x, int y)
     
     display();
 }
+
+/* readPPM()
+ *
+ * Code to read in PPM files for texture mapping.
+ *
+ */
 
 void readPPM( char *fname) {
     FILE *fp;
@@ -1065,6 +1198,12 @@ void readPPM( char *fname) {
     /*End code to read in PPM file*/
 }
 
+/* generateTextures()
+ *
+ * Generates textures after reading PPM files into the program. Called 
+ * in main().
+ *
+ */
 
 void generateTextures(int IDnum ) {
     glGenTextures(1, &imageID[IDnum]);
@@ -1077,12 +1216,15 @@ void generateTextures(int IDnum ) {
     
 }
 
+/* main()
+ *
+ * Our main function that handles standard main() duties. Generates our textures 
+ * and sets the values for the text rendered for puck status.
+ *
+ */
+
 int main(int argc, char** argv)
 {
-    /*
-     * Setting the in-game text
-     */
-    
     //Puck status text
     strcpy(text[0],"Shoot the puck!");
     strcpy(text[1],"What a goal!");

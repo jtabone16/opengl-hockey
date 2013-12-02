@@ -35,7 +35,6 @@
 		52F03DB71839458D00F9BF5F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		52F03DB91839459100F9BF5F /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		52F03DBB183948B500F9BF5F /* ice.ppm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ice.ppm; sourceTree = SOURCE_ROOT; };
-		52F03DBC183948B500F9BF5F /* puck.ppm */ = {isa = PBXFileReference; lastKnownFileType = file; path = puck.ppm; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,7 +77,6 @@
 				52E7DA0D18443A0000FC366E /* boards.ppm */,
 				52E7DA0C184438BB00FC366E /* net.ppm */,
 				52F03DBB183948B500F9BF5F /* ice.ppm */,
-				52F03DBC183948B500F9BF5F /* puck.ppm */,
 				52F03DB31839458000F9BF5F /* main.c */,
 			);
 			path = hockey;
