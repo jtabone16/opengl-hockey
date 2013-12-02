@@ -58,7 +58,6 @@ int textNum = 999; //variable used to see which line of text is being rendered
 int flash = 0; //variable used to flash 'Goals Scored' yellow
 
 
-
 /* myinit()
  *
  * Init funtion called in main() that specifies the clipping volume and certain
@@ -1063,6 +1062,9 @@ void keys(unsigned char key, int x, int y)
     
     if (key == 'c'){
         puckCam += 1;
+        if (puckCam > 2){
+            puckCam = 0;
+        }
     }
     
     //Shoot puck with space bar if power bar is stopped

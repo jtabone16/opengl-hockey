@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "main.c"
-            timestampString = "407694564.701589"
+            timestampString = "407695768.416212"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1028"
-            endingLineNumber = "1028"
+            startingLineNumber = "1027"
+            endingLineNumber = "1027"
             landmarkName = "idle()"
             landmarkType = "7">
          </BreakpointContent>
@@ -26,11 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "main.c"
-            timestampString = "407694564.701589"
+            timestampString = "407695768.416212"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1032"
-            endingLineNumber = "1032">
+            startingLineNumber = "1031"
+            endingLineNumber = "1031"
+            landmarkName = "idle()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
